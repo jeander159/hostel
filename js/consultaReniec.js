@@ -25,7 +25,8 @@ $('#txtDniPersona').on('keyup',function(){
 });
 $('#btnConsultarDniPersona').on('click',function(){
 
-	var url=baseurl+('consulta.php');
+	// var url=baseurl+('consulta.php');
+	var url=baseurl+('cReniec/consultaReniec');
 	var dni = $('#txtDniPersona').val();
 	// console.log(dni)
 	if(dni==""){
@@ -41,22 +42,28 @@ $('#btnConsultarDniPersona').on('click',function(){
 			},
 			success:function(respuesta){
 				console.log(respuesta)
-				if(respuesta==""){
+				var registro= JSON.parse(respuesta);
+				console.log(registro)
+				console.log(typeof registro)
+				if(registro==""){
 					$('#registroDniPersona').html('no se encontro el dni').show();
 					$(window).on('click',function(){
 						$('#registroDniPersona').hide();
 					})	
 				}else{
-					var registro= JSON.parse(respuesta);
-					var resultado=registro['result']
+					
+					var resultado=registro['data']
+					// var resultado=registro['result']
 					html='<ul style="padding:0;position:absolute;z-index:100">';	
-					// console.log(resultado)
+					console.log(resultado)
 					
 					if(resultado['apellidos']){
 						var ape=resultado['apellidos'].split(' ');
 						html+='<li style="" class="form-control btn-default" id="busqueda" onclick="seleccionarDniPersona(\''+resultado['DNI']+'\',\''+resultado['Nombres']+'\',\''+ape[0]+'\',\''+ape[1]+'\');">'+resultado['Nombres']+' '+ape[0]+' '+ape[1]+'</li>';
 					}else if(resultado['paterno']){
 						html+='<li style="" class="form-control btn-default" id="busqueda" onclick="seleccionarDniPersona(\''+resultado['DNI']+'\',\''+resultado['nombre']+'\',\''+resultado['paterno']+'\',\''+resultado['materno']+'\');">'+resultado['nombre']+' '+resultado['paterno']+' '+resultado['materno']+'</li>';
+					}else if(resultado['apellido_paterno']){
+						html+='<li style="" class="form-control btn-default" id="busqueda" onclick="seleccionarDniPersona(\''+resultado['numero']+'\',\''+resultado['nombres']+'\',\''+resultado['apellido_paterno']+'\',\''+resultado['apellido_materno']+'\');">'+resultado['nombres']+' '+resultado['apellido_paterno']+' '+resultado['apellido_materno']+'</li>';
 					}else{
 						html+='<li style="" class="form-control btn-default" id="busqueda" onclick="seleccionarDniPersona(\''+resultado['DNI']+'\',\''+resultado['Nombres']+'\',\''+resultado['ApellidoPaterno']+'\',\''+resultado['ApellidoMaterno']+'\');">'+resultado['Nombres']+' '+resultado['ApellidoPaterno']+' '+resultado['ApellidoMaterno']+'</li>';
 					}	

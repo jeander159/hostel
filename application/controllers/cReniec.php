@@ -19,7 +19,7 @@
 		public function consultaReniec(){
 
 			
-			// $dni=$this->input->post('dni');
+			$dni=$this->input->post('dni');
 
 			// require 'vendor/autoload.php';
   	// 		//crea un objeto de la clase DNI
@@ -33,6 +33,22 @@
 		 // 	$idDni=$this->mReniec->guardarDni($dni,$nombres,$apellidoPat,$apellidoMat);
 			// $respuestaDni=$this->mReniec->consultarDniId($idDni);
 			// echo json_encode($respuestaDni);	 	
+
+			$curl = curl_init();
+			curl_setopt_array($curl, array(
+				CURLOPT_URL => "https://apiperu.dev/api/dni/".$dni."?api_token=89948111cc8f1aa3b6d4c5efef116a8da1a1cbe3ce330d522c0fd638eda03359",
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_CUSTOMREQUEST => "GET",
+				CURLOPT_SSL_VERIFYPEER => false
+			));
+			$response = curl_exec($curl);
+			$err = curl_error($curl);
+			curl_close($curl);
+			if ($err) {
+				echo json_encode("cURL Error #:" . $err);
+			} else {
+				echo json_decode(json_encode($response));
+			}
 		}
 
 		public function consultarDni(){
